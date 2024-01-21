@@ -8,6 +8,7 @@
 
 html {
   font-family: "Satisfy", cursive;
+  font-size: 3em;
 }
 
 body {
@@ -69,6 +70,7 @@ button {
 #canvas h1 {
   position: absolute;
   top: 0;
+  left: 0;
   text-align: center;
 }
 
