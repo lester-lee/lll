@@ -2,7 +2,7 @@ const canvas = document.querySelector("#canvas");
 
 let video;
 let poseNet;
-let poses;
+let poses = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight, canvas);
@@ -20,27 +20,24 @@ function setup() {
 function draw() {
   image(video, 0, 0);
 
-  drawSkeleton();
+  drawKeypoints();
 }
 
-// A function to draw the skeletons
-function drawSkeleton() {
-  if (!poses) return;
-
-  // Loop through all the skeletons detected
+// A function to draw ellipses over the detected keypoints
+function drawKeypoints() {
+  // Loop through all the poses detected
   for (let i = 0; i < poses.length; i += 1) {
-    const skeleton = poses[i].skeleton;
-    // For every skeleton, loop through all body connections
-    for (let j = 0; j < skeleton.length; j += 1) {
-      const partA = skeleton[j][0];
-      const partB = skeleton[j][1];
-      stroke(255, 0, 0);
-      line(
-        partA.position.x,
-        partA.position.y,
-        partB.position.x,
-        partB.position.y
-      );
+    // For each pose detected, loop through all the keypoints
+    const pose = poses[i].pose;
+    for (let j = 0; j < pose.keypoints.length; j += 1) {
+      // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+      const keypoint = pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        fill(255, 0, 0);
+        noStroke();
+        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+      }
     }
   }
 }
