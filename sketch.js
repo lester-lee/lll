@@ -28,16 +28,19 @@ function setup() {
 }
 
 function draw() {
-  // image(video, 0, 0);
-
   background("#c394fc");
+  image(video, 0, 0);
   drawFace();
-  // drawKeypoints();
 }
 
 function drawFace() {
-  const lerpFactor = 0.2;
+  const lerpFactor = 0.1;
   poses.forEach((pose) => {
+    // Ignore low confidence keypoints
+    if (pose.pose.score < 0.2) {
+      return;
+    }
+
     // Draw face
     const { x: noseX, y: noseY } = pose.pose.nose;
     positions.nose = {
