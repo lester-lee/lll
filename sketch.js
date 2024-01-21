@@ -1,3 +1,14 @@
+// Portal
+const buttons = document.querySelectorAll("button");
+buttons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const { choice } = button.dataset;
+    console.log(choice);
+  });
+});
+
+// Canvas
+
 const canvas = document.querySelector("#canvas");
 
 let video;
@@ -8,6 +19,8 @@ let face = "😔";
 let mouth = "👄";
 let hand = "💅🏽";
 
+let on = false;
+
 let positions = {
   nose: { x: 0, y: 0 },
   leftHand: { x: 0, y: 0 },
@@ -17,7 +30,13 @@ let positions = {
 function setup() {
   createCanvas(windowWidth, windowHeight, canvas);
 
-  video = createCapture(VIDEO);
+  const constraints = {
+    video: {
+      facingMode: "environment",
+    },
+    audio: false,
+  };
+  video = createCapture(constraints);
   video.hide();
 
   // Create a new poseNet method with a single detection
@@ -28,8 +47,10 @@ function setup() {
 }
 
 function draw() {
+  if (!on) return;
+
   background("#c394fc");
-  image(video, 0, 0);
+  image(video, 0, 0, width, height);
   drawFace();
 }
 
