@@ -30,21 +30,27 @@ main {
   align-items: center;
 }
 
-#portal {
-  background: rgb(209, 109, 255);
+section {
+  background: rgb(134, 65, 167);
   color: white;
   text-align: center;
 
-  margin: 10vw;
+  width: 80vw;
   border: 0.5rem solid black;
 }
 
-#portal h1 {
+p {
+  padding: 0.5rem;
+  margin: 0 10vw;
+}
+
+h1 {
   background: black;
+  color: white;
   padding: 0.5rem;
 }
 
-#portal button {
+button {
   all: unset;
   cursor: pointer;
   width: 10ch;
@@ -52,10 +58,27 @@ main {
   margin: 0.5rem 0;
   font-size: 2em;
   border: 0.25rem solid black;
-  /* text-shadow: 2px 2px 4px black; */
+  background: rgb(221, 48, 120);
   box-shadow: 0.25rem 0.25rem 0 black;
 }
 
-canvas {
+#loading {
   display: none;
+}
+
+#canvas h1 {
+  position: absolute;
+  top: 0;
+  text-align: center;
+}
+
+.visually_hidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
 }

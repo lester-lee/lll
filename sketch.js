@@ -1,34 +1,37 @@
 // Portal
-const buttons = document.querySelectorAll("button");
-buttons.forEach((button) => {
+const portal = document.querySelector("#portal");
+const loading = document.querySelector("#loading");
+const choices = document.querySelectorAll("#portal button");
+let choice;
+choices.forEach((button) => {
   button.addEventListener("click", () => {
-    const { choice } = button.dataset;
+    const { choice: _choice } = button.dataset;
+    choice = _choice;
     console.log(choice);
+
+    // Go to next page
+    portal.style.display = "none";
+    loading.style.display = "block";
   });
 });
 
-// Canvas
-
+// Start canvas & camera
 const canvas = document.querySelector("#canvas");
+const results = document.querySelector("#results");
+const startButton = document.querySelector("#loading button");
+let chosen;
+startButton.addEventListener("click", () => {
+  // Go to next page
+  loading.style.display = "none";
+  canvas.classList.remove("visually_hidden");
 
-let video;
-let poseNet;
-let poses = [];
+  // Randomly select resulting face
+  chosen = Math.random() < 0.5 ? "angel" : "rat";
+  results.textContent =
+    (choice === chosen ? `you're so right...` : `sorry...`) +
+    `\nit's ${chosen}s all around you!`;
 
-let face = "😔";
-let mouth = "👄";
-let hand = "💅🏽";
-
-let on = false;
-
-let positions = {
-  nose: { x: 0, y: 0 },
-  leftHand: { x: 0, y: 0 },
-  rightHand: { x: 0, y: 0 },
-};
-
-function setup() {
-  createCanvas(windowWidth, windowHeight, canvas);
+  on = true;
 
   const constraints = {
     video: {
@@ -41,16 +44,50 @@ function setup() {
 
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, () => console.log("Model Loaded"));
-  // This sets up an event that fills the global variable "poses"
-  // with an array every time new poses are detected
   poseNet.on("pose", (results) => (poses = results));
+});
+
+// Canvas
+
+let video;
+let poseNet;
+let poses = [];
+
+const parts = {
+  angel: {
+    face: "😇",
+    size: 70,
+    mouth: "👄",
+    offset: 15,
+    hand: "🙏🏽",
+  },
+  rat: {
+    face: "🐭",
+    mouth: "👄",
+    size: 50,
+    offset: 50,
+    hand: "💅🏽",
+  },
+};
+
+let on = false;
+
+let positions = {
+  nose: { x: 0, y: 0 },
+  leftHand: { x: 0, y: 0 },
+  rightHand: { x: 0, y: 0 },
+};
+
+function setup() {
+  const canvas = createCanvas(windowWidth, windowHeight);
+  canvas.parent("canvas");
 }
 
 function draw() {
   if (!on) return;
 
   background("#c394fc");
-  image(video, 0, 0, width, height);
+  // image(video, 0, 0, width, height);
   drawFace();
 }
 
@@ -71,10 +108,14 @@ function drawFace() {
 
     textSize(150);
     textAlign(CENTER, CENTER);
-    text(face, positions.nose.x, positions.nose.y);
+    text(parts[chosen].face, positions.nose.x, positions.nose.y);
 
-    textSize(60);
-    text(mouth, positions.nose.x, positions.nose.y + 30);
+    textSize(parts[chosen].size);
+    text(
+      parts[chosen].mouth,
+      positions.nose.x,
+      positions.nose.y + parts[chosen].offset
+    );
 
     // Draw hands
     const { x: leftHandX, y: leftHandY } = pose.pose.leftWrist;
@@ -98,7 +139,7 @@ function drawFace() {
         scale(-1, 1);
       }
       rotate(PI / 2);
-      text(hand, 0, 0);
+      text(parts[chosen].hand, 0, 0);
       pop();
     };
 
